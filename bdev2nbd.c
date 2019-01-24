@@ -98,7 +98,7 @@ mainShutdownCb(void)
 static void
 mainUsage(void)
 {
-	printf("mainUsage: ...\n");
+	printf("bdev2nbd -c spdk.config\n");
 }
 
 static void
@@ -145,8 +145,12 @@ mainRun(void *arg1, void *arg2)
 	}
 
 	target->ch = spdk_bdev_get_io_channel(target->desc);
-
-	buse_main(device, &aop, (void *)target);
+	
+	// buse_main() will run until Ctrl+C terminates it.
+	rc = buse_main(device, &aop, (void *)target);
+	spdk_put_io_channel(target->ch);
+	spdk_bdev_close(target->desc);
+	spdk_app_stop(rc);
 }
 
 int main(int argc, char *argv[])
@@ -173,5 +177,4 @@ int main(int argc, char *argv[])
 
 	spdk_app_fini();
 	return rc;
-
 }
