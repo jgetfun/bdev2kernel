@@ -142,6 +142,7 @@ mainRun(void *arg1, void *arg2)
 
 	rc = spdk_bdev_open(target->bdev, true, NULL, NULL, &target->desc);
 	if (rc) {
+		printf("spdk_bdev_open(%s) failed: %d\n", target->bdev, rc);
 	}
 
 	target->ch = spdk_bdev_get_io_channel(target->desc);
@@ -173,6 +174,7 @@ int main(int argc, char *argv[])
 
 	rc = spdk_app_start(&opts, mainRun, NULL, NULL);
 	if (rc) {
+		printf("spdk_app_start() failed: %d\n", rc);
 	}
 
 	spdk_app_fini();
